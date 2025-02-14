@@ -1,0 +1,256 @@
+{
+  "user": [
+    {
+      "id": "ee50",
+      "name": "Naja",
+      "password": "Naja@123",
+      "email": "najaP@gmail.com",
+      "confirmPassword": "Naja@123",
+      "cart": [
+        {
+          "id": "11",
+          "name": "Tribal Carved Mirror",
+          "price": 18000,
+          "quantity": 1,
+          "description": " The frame is made from solid wood that has been sanded and stained in a matte black finish.",
+          "categories": "Home Decor",
+          "url": "https://www.lakkadhaara.com/cdn/shop/products/ladoga_black_boho_wall_mirror_900x_f795f01c-cd88-4262-9bbe-5973a4bcc097.png?v=1640955095&width=713"
+        }
+      ],
+      "wishlist": [
+        {
+          "id": "11",
+          "name": "Tribal Carved Mirror",
+          "price": 18000,
+          "quantity": 4,
+          "description": " The frame is made from solid wood that has been sanded and stained in a matte black finish.",
+          "categories": "Home Decor",
+          "url": "https://www.lakkadhaara.com/cdn/shop/products/ladoga_black_boho_wall_mirror_900x_f795f01c-cd88-4262-9bbe-5973a4bcc097.png?v=1640955095&width=713"
+        }
+      ],
+      "order": [
+        {
+          "id": 1736758973815,
+          "item": [
+            {
+              "id": "11",
+              "name": "Tribal Carved Mirror",
+              "price": 18000,
+              "quantity": 1,
+              "description": " The frame is made from solid wood that has been sanded and stained in a matte black finish.",
+              "categories": "Home Decor",
+              "url": "https://www.lakkadhaara.com/cdn/shop/products/ladoga_black_boho_wall_mirror_900x_f795f01c-cd88-4262-9bbe-5973a4bcc097.png?v=1640955095&width=713"
+            }
+          ],
+          "total": 18000,
+          "name": "fathima naja",
+          "address": "Peredath",
+          "state": "kerala",
+          "paymentMethod": "cash"
+        },
+        {
+          "id": 1737786925781,
+          "item": [
+            {
+              "id": "8",
+              "name": "Premium Cushion",
+              "price": 929,
+              "quantity": 2,
+              "description": "All our cushion covers come with zippers.We provide good quality.",
+              "categories": "Furnishing",
+              "url": "https://ik.imagekit.io/2xkwa8s1i/img/Premium_Cushion_Cover/Set5/Malphino/Dark-Earthy/2.jpg?tr=w-1200"
+            },
+            {
+              "id": "13",
+              "name": "Room Darkening curtain",
+              "price": 1429,
+              "quantity": 1,
+              "description": "It's a Jacquard weave curtain made of 100% polyester.",
+              "categories": "Furnishing",
+              "url": "https://ik.imagekit.io/2xkwa8s1i/img/curtains/Jacquard/virginia/6.jpg?tr=w-1200"
+            }
+          ],
+          "total": 3287,
+          "name": "dfgh",
+          "address": "ghjk",
+          "state": "gh",
+          "paymentMethod": "cash"
+        }
+      ],
+      "status": true
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Coventry Armchair",
+      "price": 34000,
+      "quantity": 5,
+      "description": "A perfect blend of timeless elegance and ultimate comfort for any living space.",
+      "categories": "Sofa",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/NewProject-24.png?v=1669985315&width=713"
+    },
+    {
+      "id": "2",
+      "name": "Hercules Bed",
+      "price": 86000,
+      "quantity": 2,
+      "description": "crafted from solid wood to provide a sturdy and stylish addition to your bedroom",
+      "categories": "Bed",
+      "url": "https://www.lakkadhaara.com/cdn/shop/files/HerculesBed5.jpg?v=1733919511&width=1100"
+    },
+    {
+      "id": "3",
+      "name": "Runners",
+      "price": 2295,
+      "quantity": 15,
+      "description": "This is lightweight and soft but durable enough to stand up to foot traffic.",
+      "categories": "Furnishing",
+      "url": "https://ik.imagekit.io/2xkwa8s1i/img/npl_modified_images/Runners_Image/WRUNCSGR60150/WRUNCSGR60150_1.jpg?tr=w-2544"
+    },
+    {
+      "id": "4",
+      "name": "Lio Dining Table",
+      "price": 38000,
+      "quantity": 4,
+      "description": "This elegant Rectangle dining table is perfect for a large family or group of friends",
+      "categories": "Table",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/LKHDINING.png?v=1671528230&width=713"
+    },
+    {
+      "id": "5",
+      "name": "Soma Wall Rack",
+      "price": 7599,
+      "quantity": 4,
+      "description": " It is incredibly well-crafted and is compelling wall art before you put anything on it.",
+      "categories": "Home Decor",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/Somawallrack.png?v=1653629600&width=713"
+    },
+    {
+      "id": "6",
+      "name": "Kantha Three Seater Sofa",
+      "price": 86000,
+      "quantity": 1,
+      "description": "created by Lakkadhaara from vintage fabrics",
+      "categories": "Sofa",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/NewProject-15.png?v=1669979251&width=713"
+    },
+    {
+      "id": "7",
+      "name": "Elsa Poster Bed",
+      "price": 124000,
+      "quantity": 4,
+      "description": "Experience the luxurious comfort and elegance of the Elsa Poster Bed.",
+      "categories": "Bed",
+      "url": "https://www.lakkadhaara.com/cdn/shop/files/ElsaPosterBed.png?v=1718201423&width=713"
+    },
+    {
+      "id": "8",
+      "name": "Premium Cushion",
+      "price": 929,
+      "quantity": 20,
+      "description": "All our cushion covers come with zippers.We provide good quality.",
+      "categories": "Furnishing",
+      "url": "https://ik.imagekit.io/2xkwa8s1i/img/Premium_Cushion_Cover/Set5/Malphino/Dark-Earthy/2.jpg?tr=w-1200"
+    },
+    {
+      "id": "9",
+      "name": "Gajraj Console Table",
+      "price": 19000,
+      "quantity": 4,
+      "description": "beautiful decorative and accessories on it well to create an impact at first sight.",
+      "categories": "Table",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/LKH-H281_2.png?v=1641905901&width=713"
+    },
+    {
+      "id": "10",
+      "name": "Benzo Loveseat",
+      "price": 46000,
+      "quantity": 6,
+      "description": "The natural finish legs and yellow textured fabric add instant charm to your favourite room",
+      "categories": "Sofa",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/NewProject_1.png?v=1670077244&width=1100"
+    },
+    {
+      "id": "11",
+      "name": "Tribal Carved Mirror",
+      "price": 18000,
+      "quantity": 4,
+      "description": " The frame is made from solid wood that has been sanded and stained in a matte black finish.",
+      "categories": "Home Decor",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/ladoga_black_boho_wall_mirror_900x_f795f01c-cd88-4262-9bbe-5973a4bcc097.png?v=1640955095&width=713"
+    },
+    {
+      "id": "12",
+      "name": "Porto Solid Wood Study Table",
+      "price": 14500,
+      "quantity": 4,
+      "description": " It is very sleek in design as you can see in the images",
+      "categories": "Table",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/WP_AK_05a.jpg?v=1615971976&width=713"
+    },
+    {
+      "id": "13",
+      "name": "Room Darkening curtain",
+      "price": 1429,
+      "quantity": 10,
+      "description": "It's a Jacquard weave curtain made of 100% polyester.",
+      "categories": "Furnishing",
+      "url": "https://ik.imagekit.io/2xkwa8s1i/img/curtains/Jacquard/virginia/6.jpg?tr=w-1200"
+    },
+    {
+      "id": "14",
+      "name": "Soneva Bed",
+      "price": 56000,
+      "quantity": 1,
+      "description": "handmade with beautiful carved legs, adding a touch of elegance to your space",
+      "categories": "Bed",
+      "url": "https://www.lakkadhaara.com/cdn/shop/files/SonevaBedFinal.png?v=1704624824&width=713"
+    },
+    {
+      "id": "15",
+      "name": "Display Rack In Iron And Solid Wood",
+      "price": 24500,
+      "quantity": 4,
+      "description": "The rack is made up of best quality Sheesham wood which makes it durable and termite free.",
+      "categories": "Home Decor",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/custom_resized_ab281826-ab20-4995-9543-95fb7aa54460.png?v=1642256822&width=713"
+    },
+    {
+      "id": "16",
+      "name": "Rattan Caddy",
+      "price": 14000,
+      "quantity": 6,
+      "description": " Featuring a handy handle, this caddy is easy to transport and it is also easy to wipe clean.",
+      "categories": "Home Decor",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/NewProject-48.png?v=1669989297&width=713"
+    },
+    {
+      "name": "Drona Center Table",
+      "price": 34000,
+      "quantity": 4,
+      "description": ". Crafted from white marble with grains",
+      "categories": "Table",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/custom_resized_3b2fb979-c04a-4fbd-b577-f4fc592b8d04.jpg?v=1657283058&width=713",
+      "id": "17"
+    },
+    {
+      "id": "18",
+      "name": "Linen Seating Pad",
+      "price": 1899,
+      "quantity": 1,
+      "description": "Its high-quality linen fabric is soft and breathable, making it perfect for staying seated for hours.",
+      "categories": "Bed",
+      "url": "https://www.lakkadhaara.com/cdn/shop/files/NewProject-19_0210dc74-73cf-435d-ab60-6205014ecd0c.png?v=1693728645&width=713"
+    },
+    {
+      "id": "19",
+      "name": "Urban Dew sofa",
+      "price": 40000,
+      "quantity": 3,
+      "description": "Photographed here as a Two Seater in Soft Pink Aqua clean Velvet.",
+      "categories": "Sofa",
+      "url": "https://www.lakkadhaara.com/cdn/shop/products/kew_sofa_4_1.jpg?v=1669985054&width=360"
+    }
+  ]
+}
