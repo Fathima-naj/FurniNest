@@ -6,28 +6,8 @@
       "password": "Naja@123",
       "email": "najaP@gmail.com",
       "confirmPassword": "Naja@123",
-      "cart": [
-        {
-          "id": "11",
-          "name": "Tribal Carved Mirror",
-          "price": 18000,
-          "quantity": 1,
-          "description": " The frame is made from solid wood that has been sanded and stained in a matte black finish.",
-          "categories": "Home Decor",
-          "url": "https://www.lakkadhaara.com/cdn/shop/products/ladoga_black_boho_wall_mirror_900x_f795f01c-cd88-4262-9bbe-5973a4bcc097.png?v=1640955095&width=713"
-        }
-      ],
-      "wishlist": [
-        {
-          "id": "11",
-          "name": "Tribal Carved Mirror",
-          "price": 18000,
-          "quantity": 4,
-          "description": " The frame is made from solid wood that has been sanded and stained in a matte black finish.",
-          "categories": "Home Decor",
-          "url": "https://www.lakkadhaara.com/cdn/shop/products/ladoga_black_boho_wall_mirror_900x_f795f01c-cd88-4262-9bbe-5973a4bcc097.png?v=1640955095&width=713"
-        }
-      ],
+      "cart": [],
+      "wishlist": [],
       "order": [
         {
           "id": 1736758973815,

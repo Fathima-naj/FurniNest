@@ -4,20 +4,26 @@ import { useDispatch,useSelector } from "react-redux";
 import { fetchProduct } from "../../slice/ProductSlice";
 import { addToWishlist,addToCart } from "../../slice/CartSlice";
 import Navbar from "../../components/Navbar";
-
+import { toast } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
 
 function SearchItem() {
 
-  const [filtered, setFiltered] = useState([]);
   const location = useLocation();
-  const { result } = location.state || { result: "" };
-  
+ const {product,loading,error,pagination}=useSelector((state)=>state.product)
+const [page,setPage]=useState(1)
+
 const dispatch=useDispatch()
-  const product=useSelector(state=>state.product.product)
+  const {user}=useSelector(state=>state.auth)
    const[selectedProduct,setSelectedProduct]=useState(null)
 
    const handleAddToCart=(product)=>{
-             dispatch(addToCart(product))
+             if(user){
+              dispatch(addToCart(product))
+              toast.success('Product Added to the cart successfully')
+             }else{
+              toast.error('Please login')
+             }
            }
    
     const openModal=(product)=>{
@@ -27,22 +33,26 @@ const dispatch=useDispatch()
     const closeModal=()=>{
     setSelectedProduct(null)
     }
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get("query") || ""; 
+    
+    useEffect(() => {
+      if (searchQuery) {
+        dispatch(fetchProduct({ search: searchQuery, page }));
+      }
+    }, [searchQuery, dispatch, page]);
 
-  useEffect(() => {
-    
-   
-      dispatch(fetchProduct())
-   
-        const filteredPro = product.filter((p) =>
-          p.name.toLowerCase().includes(result.toLowerCase()) ||
-          p.categories.toLowerCase().includes(result.toLowerCase())
-        );
+const handlePageChange = (newPage) => {
+  if (newPage > 0 && newPage <= pagination.totalPages) {
+    setPage(newPage);
+  }
+};
 
-        setFiltered(filteredPro);
-     
-    
-    
-  }, [result]);
+if (loading) return <div>Loading...</div>;
+if (error) return <div>Error: {error}</div>;
+
+
+
 
   return (
     <div className="min-h-screen bg-gray-100 pt-32">
@@ -52,14 +62,14 @@ const dispatch=useDispatch()
       </h1>
 
     
-      {filtered.length === 0 ? (
+      {product.length === 0 ? (
         <h2 className="text-center text-gray-600 text-lg">
-          No match found for "{result}"
+          No match found 
         </h2>
       ) : (
         <div className="container px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filtered.map((itm) => (
+          {product.map((itm) => (
             <div
               key={itm.id}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
@@ -82,14 +92,14 @@ const dispatch=useDispatch()
               </div>
               <div className="text-center cursor-pointer p-3">
               <div className="p-2  ">
-              <button className=" rounded-lg text-3xl bg-red-200 px-1 focus:bg-red-600 focus:text-white" onClick={()=>dispatch(addToWishlist(itm))}>
+              <button className=" rounded-lg text-3xl bg-red-200 px-1 focus:bg-red-600 focus:text-white" onClick={()=>dispatch(addToWishlist(itm._id))}>
                 ♡
               </button>
               </div>
             <button
                  className="bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700"
                   onClick={() => {
-                  handleAddToCart(itm);
+                  handleAddToCart(itm._id);
                                
                    }}
                   >
@@ -102,6 +112,42 @@ const dispatch=useDispatch()
         </div>
       )}
      
+     <div className="flex justify-center items-center mt-10 space-x-4">
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+          className={`py-2 px-4 rounded bg-gray-500 text-white ${
+            page === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-600"
+          }`}
+        >
+          Previous
+        </button>
+        {[...Array(pagination.totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`py-2 px-4 rounded ${
+              page === index + 1
+                ? "bg-blue-500 text-white"
+                : "bg-gray-300 hover:bg-gray-400"
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page === pagination.totalPages}
+          className={`py-2 px-4 rounded bg-gray-500 text-white ${
+            page === pagination.totalPages
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-gray-600"
+          }`}
+        >
+          Next
+        </button>
+      </div>
+
 
 {selectedProduct && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -126,7 +172,7 @@ const dispatch=useDispatch()
                         <button
                             className="bg-red-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-700"
                             onClick={() => {
-                                handleAddToCart(selectedProduct);
+                                handleAddToCart(selectedProduct._id);
                                 closeModal();
                             }}
                         >

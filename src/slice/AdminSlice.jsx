@@ -1,128 +1,164 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 
-import axios from "axios";
+import axiosInstance from "../api/axiosinstance";
 const initialState={
     loading:false,
-    product:[],
-    category:[],
-    error:'',
+    error:null,
     logged:false,
-    user:[]
+    totalPages:0,
+    currentPage:1,
+    totalUsers:0,
+    userOrder:[],
+    user:[],
+   totalRevenue:0,
 }
 
-export const fetchProduct=createAsyncThunk('product/fetchProduct',()=>{
-    return axios.get('http://localhost:3000/products')
-    .then(res=>res.data)
-    
-})
-
-export const addProduct=createAsyncThunk('product/addProduct',(newProduct)=>{
-    return axios.post('http://localhost:3000/products',newProduct)
-    .then(res=>res.data)
-})
-
-export const deleteProduct = createAsyncThunk('product/deleteProduct', (id)=>{
-
-    console.log('deleting from id',id)
-    return axios.delete(`http://localhost:3000/products/${id}`)
-    .then(res=>res.data)
-}
-    
-);
 
 
-export const editProduct = createAsyncThunk('product/editProduct', (product) => {
-    const { id, ...productData } = product;
-    return axios
-        .put(`http://localhost:3000/products/${id}`, productData)
-        .then((res) => res.data);
-});
 
 
-export const fetchUser=createAsyncThunk('user/fetchUser',()=>{
-    return axios.get('http://localhost:3000/user')
-    .then(res=>res.data)
-})
-
-export const userStatus=createAsyncThunk('status/userStatus',async({id,status})=>{
-    // event.stopPropogation();
-    const confirmAction = window.confirm('Do you want to take this action?');
-    if (confirmAction) {
-     await  axios
-        .patch(`http://localhost:3000/user/${id}`, { status: !status })
-      return {id,status:!status}
+export const fetchUser=createAsyncThunk('user/fetchUser',async({page=1},{rejectWithValue})=>{
+    try {
+        const response=await axiosInstance.get('/admin/getusers',{
+            params:{page},
+        })
+        console.log('admin user',response.data.data)
+        return response.data.data;
+    } catch (error) {
+        return rejectWithValue(
+            error.response?.data?.message||"Error fetching all users"
+        )
     }
 })
 
 
 
+export const getUserById = createAsyncThunk("users/getUserById",
+    async (id, { rejectWithValue }) => {
+      try {
+        const response = await axiosInstance.get(
+         `/admin/getusers/${id}`
+        );
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Error get single users"
+        );
+      }
+    }
+);
+
+
+export const userStatus=createAsyncThunk('status/userStatus',async(id,{rejectWithValue})=>{
+    // event.stopPropogation();
+try {
+    
+     const response=await  axiosInstance.patch(`/admin/blockUser/${id}`)
+      return response.data ||id
+    
+} catch (error) {
+    return rejectWithValue(
+        error.response?.data?.message || "Error blocking/unblocking user"
+      );
+
+}   
+})
+
+
+export const getUserOrder = createAsyncThunk(
+    "order/getUserOrder",
+    async (id, { rejectWithValue }) => {
+      try {
+        const response = await axiosInstance.get(
+          `/admin/getUserOrder/${id}`
+        );
+        console.log('userId',id)
+        console.log('user order from slice',response.data);
+        return response.data||[]
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Error fetching cart"
+        );
+      }
+    }
+  );
+  
+
+  export const totalRevenues = createAsyncThunk(
+    "users/totalRevenue",
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await axiosInstance.get('/admin/totalRevenue');
+        console.log(response.data, ' revenue');
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Error fetching total revenue"
+        );
+      }
+    }
+  );
+
 const AdminSlice=createSlice({
-    name:'product',
+    name:'admin',
     initialState,
     reducers:{
        setLogged:(state,action)=>{
         state.logged=action.payload
-       }
+       },
+       setCategory: (state, action) => {
+             state.categories = action.payload;
+           },
     },
     extraReducers:builder=>{
         builder
-        .addCase(fetchProduct.pending,state=>{
-            state.loading=true;
-            
-        })
-        .addCase(fetchProduct.fulfilled,(state,action)=>{
-            console.log('Fetched Products:', action.payload);
-            state.loading=false,
-            state.product=action.payload,
-            state.category = [
-                ...new Set(action.payload.map((v) => v.categories))
-              ]; 
-              console.log('category',state.category)
-            state.error=''
-        })
-        .addCase(fetchProduct.rejected,(state,action)=>{
-            state.loading=false,
-            state.product=[],
-            state.category=[],
-            state.error=action.error.message
-        })
-        .addCase(addProduct.fulfilled,(state,action)=>{
-            state.product.push(action.payload)
-            state.error=''
-        })
-        .addCase(addProduct.rejected, (state, action) => {
-            state.error = action.error.message; 
-        })
-        .addCase(deleteProduct.fulfilled,(state,action)=>{
-            state.product=state.product.filter(itm=>itm.id!==action.payload.id)
-            state.error=''
-        })
-        .addCase(deleteProduct.rejected,(state,action)=>{
-            state.error=action.error.message;
-        })
-        .addCase(editProduct.fulfilled,(state,action)=>{
-            const product=action.payload
-           state.product= state.product.map(itm=>itm.id===product.id? product:itm)
-            state.error=''
-        })
-        .addCase(editProduct.rejected,(state,action)=>{
-            state.error=action.error.message
-        })
+        
         .addCase(fetchUser.fulfilled,(state,action)=>{
+            state.loading=false,
+            state.user=action.payload.users,
+            state.totalUsers = action.payload.totalUsers;
+            state.totalPages = action.payload.totalPages;
+            state.currentPage = action.payload.currentPage || 1;
+            console.log(state.totalUsers)
+        })
+        .addCase(getUserById.fulfilled,(state,action)=>{
+            state.loading=false,
             state.user=action.payload
+            state.error=null
+        })
+        .addCase(getUserById.rejected,(state,action)=>{
+            state.error=action.payload
         })
         .addCase(userStatus.fulfilled,(state,action)=>{
-            const status=action.payload.status
             state.user=state.user.map((users) =>
-                users.id === action.payload.id ? { ...users,status } : { ...users }
-              )
+                users._id === action.payload._id ? { ...users,isBlock:action.payload.isBlock } : { ...users }
+              ),
+              state.error= null
         })
         .addCase(userStatus.rejected,(state,action)=>{
-            state.error=action.error.message
+            state.error=action.payload
         })
-        
+        .addCase(getUserOrder.fulfilled,(state,action)=>{
+            state.loading=false;
+            state.userOrder=action.payload.orders
+            console.log('order',state.userOrder)
+            state.pagination=action.payload.pagination
+
+        })
+        .addCase(getUserOrder.rejected,(state,action)=>{
+             state.error=action.payload
+        })
+        .addCase(totalRevenues.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = null;
+            state.totalRevenue = action.payload.total;
+            (state.totalRevenue)
+            console.log(state.totalRevenue);
+          })
     }
 
 })
+export const { setCategory } = AdminSlice.actions;
+
 export const {setLogged}=AdminSlice.actions
 export default AdminSlice.reducer

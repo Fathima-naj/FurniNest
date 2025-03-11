@@ -2,6 +2,7 @@ import React from 'react'
 import { Formik ,Form ,Field , ErrorMessage} from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
+import axiosInstance from '../../api/axiosinstance'
 import {toast ,ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Link, useNavigate } from 'react-router-dom'
@@ -10,17 +11,15 @@ const initialValues={
     name:'',
     password:'',
     email:'',
+    username:'',
     confirmPassword:'',
-    cart:[],
-    wishlist:[],
-    order:[],
-    status:true
 }
 
 const validationSchema=Yup .object({
   name:Yup.string().required("Name is required!"),
   email:Yup.string().email('invalid email format')
   .required('Email is required!'),
+  username: Yup.string().required("username is required"),
   password:Yup.string().required('Password is required!')
   .min(8,'must be atleast 8 characters')
   .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -37,20 +36,10 @@ function Register() {
 
   const onSubmit=async(values,{resetForm})=>{
     try{
-      if(values.email==='fnajaP@gmail.com'){
-        toast.error('Email is already exist')
-         return;
-      }
-      const existingEmail=await  axios.get('http://localhost:3000/user',{
-         params:{email:values.email}
-        });
-        if(existingEmail.data.length>0){
-          toast.error('Email is already exist , choose another');
-          return;
-        }
-      
-    
-      const res= await axios.post('http://localhost:3000/user',values);
+      const {confirmPassword,...dataToSend}=values
+      console.log("API URL:", `/users/register`);
+       const res= await axiosInstance.post(`/users/register`,dataToSend);
+      console.log("values:",values)
       console.log('saved',res.data);
       toast.success('Registered successfully !')
       resetForm();
@@ -85,7 +74,16 @@ function Register() {
           /><br/>
           <ErrorMessage  name='name' component='div' className='text-red-500 text-sm mt-1'/>
         </div>
-
+        
+        <div className='mb-4'>
+          <Field
+          type='text' 
+          name="username" 
+          placeholder='Username'
+          className="w-full px-3 py-2 border rounded-lg "
+          /><br/>
+          <ErrorMessage name='username' component='div' className='text-red-500 text-sm mt-1'/>
+        </div>
         
         <div className='mb-4'>
           <Field 
@@ -113,7 +111,7 @@ function Register() {
           <Field
           type='password' 
           name="confirmPassword" 
-          placeholder='Confirm Password'
+          placeholder='Confirm password'
           className="w-full px-3 py-2 border rounded-lg "
           /><br/>
           <ErrorMessage name='confirmPassword' component='div' className='text-red-500 text-sm mt-1'/>

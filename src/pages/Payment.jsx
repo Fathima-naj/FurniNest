@@ -4,8 +4,10 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 import { useSelector,useDispatch } from "react-redux";
-import { addToOrder, fetchOrder } from "../slice/CartSlice";
+import { addToOrder,verifypayment } from "../slice/orderSlice";
+import { clearCart } from "../slice/CartSlice";
 function Payment() {
 
   const navigate = useNavigate();
@@ -13,23 +15,17 @@ function Payment() {
   const dispatch=useDispatch()
   const cart=useSelector(state=>state.cart.cart)
 
-  useEffect(()=>{
-    dispatch(fetchOrder())
-  },[])
+  // useEffect(()=>{
+  //   dispatch(fetchOrder())
+  // },[])
   const initialValues = {
     name: "",
     address: "",
-    state: "",
-    paymentMethod: "",
   };
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     address: Yup.string().required("Address is required"),
-    state: Yup.string().required("State is required"),
-    paymentMethod: Yup.string().required("Payment method is required"),
-    
-    
   });
 
   const totalPrice = cart.reduce(
@@ -37,16 +33,64 @@ function Payment() {
     0
   );
 
-  const onSubmit = (values) => {
-    const orderdata = {
-      id: Date.now(),
-      item: cart,
-      total: totalPrice,
-      ...values
-      
+
+  // Razorpay Payment 
+  const openRazorpayPayment = (razorpayOrderId, amount, name) => {
+    const options = {
+      key: "rzp_test_GcYeDXpTqSAVpK",
+      amount: amount,
+      currency: "INR",
+      name: "FurniNest",
+      description: "Product Payment",
+      order_id: razorpayOrderId,
+      handler: (response) => {
+        const paymentData = {
+          paymentId: response.razorpay_payment_id,
+          orderId: razorpayOrderId,
+        };
+        console.log(paymentData);
+        dispatch(verifypayment(paymentData))
+          
+          .then(() => navigate("/"),dispatch(clearCart()))
+          .catch((error) => {
+            console.error("Payment verification failed:", error); 
+            toast.error("Payment verification failed. Try again.");
+          });
+      },
+      prefill: {
+        name: name,
+      },
+      theme: {
+        color: "#F37254",
+      },
     };
-    dispatch(addToOrder(orderdata));
-    navigate("/");
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+  };
+
+
+  const onSubmit =async (values) => {
+    try {
+      const orderData = {
+        id: Date.now(),
+        item: cart,
+        total: totalPrice,
+        paymentMethod: "razorpay", 
+        ...values
+        
+      };
+      const response = await dispatch(addToOrder(orderData)).unwrap();
+      console.log(response);
+      const { razorpayOrderId, amount } = response;
+      openRazorpayPayment(razorpayOrderId, amount, values.name);
+    } catch (error) {
+      toast.error(error || "Failed to place order");
+    }
+    // } catch (error) {
+      
+    // }
+    // dispatch(addToOrder(orderdata));
+    // navigate("/");
   };
 
   return (
@@ -94,21 +138,7 @@ function Payment() {
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              State
-            </label>
-            <Field
-              type="text"
-              name="state"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <ErrorMessage
-              name="state"
-              component="div"
-              className="text-red-500 text-sm mt-1"
-            />
-          </div>
+          
 
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
             Cart Order Items:
@@ -135,28 +165,6 @@ function Payment() {
             <span>₹ {totalPrice}</span>
           </div>
 
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">
-              Payment methods:
-            </h3>
-            
-
-            <div>
-              <label>
-                <Field type="radio" name="paymentMethod" value="cash" />
-                <span> Cash</span>
-              </label>
-            </div>
-          </div>
-
-          <ErrorMessage
-            name="paymentMethod"
-            component="div"
-            className="text-red-500 text-sm mt-1"
-          />
-
-          
-            
         
 
           <div className="flex justify-center">
@@ -164,8 +172,8 @@ function Payment() {
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              Confirm Payment
-            </button>
+             Proceed to Payment
+              </button>
           </div>
         </Form>
       </Formik>

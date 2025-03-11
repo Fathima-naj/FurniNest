@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
-import { fetchUser ,removeCart,clearCart,updateQty} from '../slice/CartSlice';
+import { removeCart,clearCart, getCart, incrementQuantity, decrementQuantity} from '../slice/CartSlice';
 import { useSelector,useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -9,12 +9,13 @@ function Cart() {
   const navigate=useNavigate()
   const dispatch=useDispatch()
   const cart=useSelector(state=>state.cart.cart)
-  //const {updateQty}=useContext(cartCont);
+  const loading=useSelector((state)=>state.cart.loading)
    
+  console.log('cart page',cart)
 
 
   useEffect(()=>{
-      dispatch(fetchUser())
+      dispatch(getCart())
   },[dispatch])
   
   const totalPrice = cart.reduce((sum, item) => sum + ((item.price) * (item.quantity||1)),0);
@@ -74,21 +75,22 @@ function Cart() {
 
               <div className=" text-center p-3 space-x-2">
                 <button
-                onClick={() => dispatch(updateQty({productId:item.id, newquantity:item.quantity - 1}))}
+                onClick={() => {
+                  console.log("Decrementing Product ID:",  item.id); // Debugging
+                  dispatch(decrementQuantity( item.id));
+                }}
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded px-2"
+                disabled={loading || item.quantity <1}
                 > -
                 </button>
 
-                <input
-                type='number'
-                value={item.quantity}
-                onChange={(e)=>dispatch(updateQty({productId:item.id,newquantity:Number(e.target.value||1)}))}
-                className="w-12 border rounded-md text-center "
-                /> 
+                <span className="w-12 border rounded-md text-center p-1">{item.quantity}</span>
+
 
                 <button
-                onClick={() => dispatch(updateQty({productId:item.id,newquantity: item.quantity + 1}))}
+                onClick={() => dispatch(incrementQuantity(item.id))}
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded px-2"
+                disabled={loading}
                 > + </button>
                 
                  

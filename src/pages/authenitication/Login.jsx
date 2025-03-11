@@ -7,6 +7,8 @@ import { ToastContainer,toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useDispatch } from 'react-redux'
 import { setLogged } from '../../slice/AdminSlice'
+import axiosInstance from '../../api/axiosinstance'
+import { setUser } from '../../slice/AuthSlice'
 
 const initialValues={
   password:"",
@@ -23,49 +25,29 @@ const dispatch=useDispatch()
 //  const [logged,setLogged]=useState(null)
 const navigate=useNavigate()
 
-const onSubmit=async(values)=>{
+const onSubmit=async(values,{resetForm})=>{
   try{
 
-    if(values.email==='fnajaP@gmail.com'&& values.password==='Naja#621'){
-     // setLogged(true)
-     dispatch(setLogged(true))
-        navigate('/admin')
-    }
 
-    else{
-      const valid= await axios.get('http://localhost:3000/user')
-      const user=valid.data.find((val)=>val.email===values.email&& val.password===values.password)
+    // if(values.email==='fnajaP@gmail.com'&& values.password==='Naja#621'){
+    //  // setLogged(true)
+    //  dispatch(setLogged(true))
+    //     navigate('/admin')
+    // }
 
-      if(user){
-
-        if(!user.status){
-          toast.error('You are blocked')
-          return;
-        }
+   
+      const response= await axiosInstance.post(`/users/login`,values)
+      console.log(response,"from login response : ")
       
-      localStorage.setItem('id',user.id);
-      localStorage.setItem('name',user.name);
-        // console.log(user.id)
-        dispatch(setLogged(true));
-        navigate('/');
+      setUser(response.data.user.name)
+      console.log(response.data,"from login response.data : ")
+      
+        const userRole=response.data.user.isAdmin?'admin':'user'
+        console.log(userRole)
+        navigate(userRole==='admin'?'/admin':'/');
+        resetForm()
+        toast.success(response.data.message)
         
-      }else{
-        toast.error('invalid email or password')
-      }
-        }
-    
-  // const user=valid.data.find((val)=>val.email===values.email&& val.password===values.password)
-
-  // if(user){
-  //   toast.success('logged in successfully')
-  //   localStorage.setItem('id',user.id);
-  //   localStorage.setItem('name',user.name);
-  //   // console.log(user.id)
-  //   navigate('/')
-  // }else{
-  //   toast.error('invalid email or password')
-  // }
-
   }catch(error){
     console.error('Error:',error)
     toast.error('soemthing went wrong')

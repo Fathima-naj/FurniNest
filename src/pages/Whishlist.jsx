@@ -10,14 +10,17 @@ function Whishlist() {
   const wishlist=useSelector(state=>state.cart.wishlist)
   useEffect(()=>{
     dispatch(fetchWishlist())
-  },[])
+  },[dispatch])
 
+  useEffect(() => {
+    console.log("Updated Wishlist:", wishlist);
+  }, [wishlist]);
   
 
-  const handleWishlist=(product)=>{
+  const handleWishlist=(productId)=>{
    
-   dispatch(addToCart(product));
-   dispatch(removeWishlist(product.id));
+   dispatch(addToCart(productId));
+   dispatch(removeWishlist(productId));
   }
 
   return (
@@ -29,9 +32,9 @@ function Whishlist() {
       ) : (
         <div className='container mx-auto px-6 py-10'>
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
-       { wishlist.map((product) => (
+       { wishlist.map((product,index) => (
          <div
-          key={product.id}
+          key={product._id }
           className="bg-white rounded-lg shadow-md hover:shadow-lg duration-300 overflow-hidden"
         >
           <div>
@@ -53,13 +56,13 @@ function Whishlist() {
             </p>
             <div className='text-center p-4'>
               <div className='p-2'>
-            <button onClick={()=>dispatch(removeWishlist(product.id))}
+            <button onClick={()=>dispatch(removeWishlist(product._id))}
                     className="bg-red-500 hover:bg-red-600 text-white rounded px-4 py-1 ml-2"
                     >
                        Remove
                    </button>
                    </div>
-         <button onClick={()=>handleWishlist(product)}
+         <button onClick={()=>handleWishlist(product._id)}
              className="bg-red-600 hover:bg-red-800 text-white rounded px-4 py-1 ml-2"
            >
             Move to Cart

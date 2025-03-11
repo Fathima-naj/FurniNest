@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {  FaRegUser } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
@@ -6,16 +6,20 @@ import { IoIosHeartEmpty } from "react-icons/io";
 import { CiSearch } from "react-icons/ci";
 import { HiMenu, HiX } from "react-icons/hi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart, getCart } from "../slice/CartSlice";
+import { fetchUserDetails, logoutUser } from "../slice/AuthSlice";
+import { toast } from "react-toastify";
+import { fetchProduct } from "../slice/ProductSlice";
 function Navbar() {
   const [search, setSearch] = useState("");
   const [isDropDown, setIsDropDown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const count=useSelector(state=>state.cart.count)
-
+  const cart=useSelector(state=>state.cart.cart)
+  const {user}=useSelector(state=>state.auth)
+   const dispatch=useDispatch()
+ console.log('cart length',cart.length)
   const toLinks = [
     "/category/table",
     "/category/bed",
@@ -24,22 +28,60 @@ function Navbar() {
     "/category/furnishing",
   ];
   const category = ["Table", "Bed", "Home Decor", "Sofa", "Furnishing"];
-
+ 
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(!user){
+      dispatch(fetchUserDetails())
+    }
+  },[dispatch,user]);
+
+  useEffect(() => {
+    if (!user) {
+       dispatch(fetchUserDetails());
+    } else {
+       dispatch(getCart());  
+    }
+ }, [dispatch, user]);
+ 
+  
 
   const handleNavigation = (path) => {
     navigate(path);
     setIsMenuOpen(false);
   };
 
-  const handleSearchIcon = () => {
+ 
+  const handleSearchIcon = (e) => {
+    e.preventDefault();
     if (search.trim()) {
-      navigate("/search", { state: { result: search } });
+        navigate(`/search?query=${search}`); 
     } else {
-      alert("Please enter a search term");
+        alert("Please enter a search term");
     }
-  };
 
+    
+};
+
+  
+const handleLogOut=async()=>{
+  
+  //   setTimeout(() => {
+  //     navigate("/");
+  //     setIsLoggedOut(true) // Force a full state refresh
+  //   }, 100);
+  try{
+    await dispatch(logoutUser()).unwrap();
+    dispatch(clearCart());
+    //dispatch(clearCart());
+    toast.success('User logout successfully')
+    navigate('/')
+  }catch(err){
+   console.log('Logout failed',err)
+  }
+    
+}
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-md">
@@ -72,7 +114,7 @@ function Navbar() {
                 <CiSearch
                   size={23}
                   className="cursor-pointer text-gray-500 hover:text-red-600 transition-colors"
-                  onClick={handleSearchIcon}
+                  onClick={(e)=>handleSearchIcon(e)}
                 />
               </div>
             )}
@@ -100,9 +142,9 @@ function Navbar() {
                 size={23}
                 className="cursor-pointer text-gray-500 hover:text-red-600 transition-colors"
               />
-              {count > 0 && (
+              { cart.length>0  && (
                 <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {count}
+                  {cart?.length}
                 </span>
               )}
             </NavLink>
@@ -115,7 +157,7 @@ function Navbar() {
           onClick={() => handleNavigation('/login')}
           />
 
-          <p>{localStorage.getItem('name')}</p>
+          <p>{user?.username||'Guest'}</p>
         
       </div>
    
@@ -123,12 +165,7 @@ function Navbar() {
       <ul className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg w-40 text-sm text-gray-700">
         <li 
         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-        onClick={() => {
-          const confirmLogout = window.confirm("Are you sure you want to log out?");
-          if (confirmLogout) {
-            navigate('/login');
-          }
-        }}
+        onClick={handleLogOut}
        >
           Logout
         </li>
@@ -157,9 +194,9 @@ function Navbar() {
                 size={23}
                 className="cursor-pointer text-gray-500 hover:text-red-600 transition-colors"
               />
-              {count > 0 && (
+              {cart.length > 0 && (
                 <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {count}
+                  {cart?.length}
                 </span>
               )}
             </NavLink>
@@ -210,8 +247,11 @@ function Navbar() {
                 className="text-gray-500 hover:text-red-600 transition-colors"
                 onClick={() => handleNavigation("/login")}
               />
-              <p className=" md:block">{localStorage.getItem("name")}</p>
+              <p className=" md:block">{user?.username|| 'Guest'}</p>
                 
+              </div>
+              <div onClick={()=>{handleLogOut(),setIsMenuOpen(false)}}>
+                Logout
               </div>
               
             </div>
